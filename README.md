@@ -1,2 +1,3 @@
 # hello-word
-My first perository in github
+My first repository in github
+I come from Viet Nam
