@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+       
+
+        body {
+            background: black;
+            width:  100%;
+            height: 100%;
+            margin: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="1000" height="1000" id="mycanvas"></canvas>
+    <script>
+        // const sum=(a,b)=>{return a+b;};        
+        // alert(sum(10,7));
+        var canvas = document.getElementById("mycanvas");
+        var ctx = canvas.getContext("2d");
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        var kata;
+        var streams=[];
+        var x=0;y=0;
+        for(var i=0;i<canvas.width/20;i++){
+            var stream=new Stream();
+            stream.generateSymbols(x,getRandom(-300,0));
+            streams.push(stream);
+            x+=20;
+        }
+       
+        function Symbol(x, y, speed,first) {
+            this.x = x;
+            this.y = y;
+            this.first=first;
+            this.speed=speed;
+            this.value = String.fromCharCode(0x30A0 + Math.random() * (0x30FF - 0x30A0 + 1));
+            this.rain = function () {
+                    this.y =(this.y>=canvas.height)?0:this.y+=this.speed;
+                    if(this.y==100||this.y==200||this.y==300||this.y==400||this.y==500||this.y==600||this.y==700){ this.value = String.fromCharCode(0x30A0 + Math.random() * (0x30FF - 0x30A0 + 1));}
+            }
+
+        }
+        function Stream(){
+            this.symbol=[];
+            this.totalSymbols=getRandom(5,18);
+            this.speed=getRandom(0,10);
+            this.generateSymbols=function(x,y){
+                var first=getRandom(0,4)==1;
+                for(var i=0;i<=this.totalSymbols;i++){
+                    kata=new Symbol(x,y,this.speed,first);
+                    this.symbol.push(kata);
+                    y-=20;
+                    first=false;
+
+                }
+            }
+            this.render=function(){
+                this.symbol.forEach(function(kata){
+                    if(kata.first==true){
+                        ctx.fillStyle ="rgb(180,255,180)" ;
+                    }else{
+                        ctx.fillStyle = "green";
+                    }
+                    
+                    ctx.font = "20px Arial";
+                    ctx.fillText(kata.value, kata.x, kata.y);
+                    kata.rain();  
+                }
+                );
+                 
+            }
+        }
+        function getRandom(min, max) {
+            return Math.floor(Math.random() * (max - min)) + min;
+        }
+
+        function draw() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            streams.forEach(function(stream){stream.render();});
+            requestAnimationFrame(draw);
+        }
+        draw();
+
+    </script>
+</body>
+
+</html>
